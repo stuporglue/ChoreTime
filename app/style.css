@@ -1,0 +1,20 @@
+body {
+    text-align: center;
+}
+
+table {
+    margin: 45px auto auto auto;
+}
+
+img.face {
+    border: 5px solid;
+    padding: 5px;
+}
+
+.inactive img {
+    opacity: 0.4;
+}
+
+.loggedin img {
+    border: 5px solid blue;
+}
