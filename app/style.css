@@ -18,3 +18,22 @@ img.face {
 .loggedin img {
     border: 5px solid blue;
 }
+
+[name=extra_time]{
+    width: 40px;
+    display: inline-block;
+}
+
+
+.notdone {
+    background-color: #f88;
+}
+
+.done {
+    background-color: #8f8;
+}
+
+.doitnow {
+    width: 70px;
+    height: 70px;
+}
