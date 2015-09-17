@@ -1,94 +1,6 @@
 <?php
 
-require_once('db.php');
-
-function getSessions(){
-    $res = shell_exec('loginctl list-sessions');
-    $res = split("\n",$res);
-    $sessions = Array();
-    foreach($res as $session){
-        $session = preg_split("|\s+|",trim($session));
-        $first = (isset($first) ? $first : $session);
-        if(count($session) == 4 && $session[0] !== 'SESSION'){
-            $wordsession = Array();
-            foreach($first as $k => $v){
-                $wordsession[$v] = $session[$k];
-            }
-            $sessions[] = $wordsession;
-        }
-    }
-
-    foreach($sessions as $k => $session){
-        $res = shell_exec("loginctl show-session -p Display -p Active  {$session['SESSION']}");
-        $res = split("\n",trim($res));
-        foreach($res as $line){
-            $vars = split("=",trim($line));
-            if(count($vars) == 2){
-                $sessions[$k][$vars[0]] = $vars[1];
-            }
-        }
-    }
-
-    $sessions_by_user = Array();
-    foreach($sessions as $session){
-        $sessions_by_user[$session['USER']][] = $session;
-    }
-
-    return $sessions_by_user;
-}
-
-function makeButtonForm($username,$time,$done){
-    $html = "<form action='do_chores.php' method='post'>";
-    $html .= "<input type='hidden' name='username' value='$username'/>";
-    $html .= "<input type='hidden' name='time' value='$time'/>";
-    if($done){
-        $html .= "<input class='done doitnow' type='submit' value='Done!'/>";
-    }else{
-        $html .= "<input class='notdone doitnow' type='submit' value='Do It!'/>";
-    }
-    $html .= "</form>";
-    return $html;
-}
-
-function makeExtraChoreForm($username){
-    $html = "<form action='do_chores.hpp method='post'>";
-    $html .= "<input type='hidden' name='username' value='$username'/>";
-    $html .= "<input type='hidden' name='time' value='extra'/>";
-    $html .= "<input type='text' name='extra' value=''/><br>";
-    $html .= "<input type='text' name='extra_time' value='5'/>";
-    $html .= "<input type='submit' value='Add'/>";
-    $html .= "</form>";
-    return $html;
-}
-
-function getChores($date = FALSE){
-    if($date === FALSE){
-        $date = time();
-    }
-
-    $week = date('W',$date);
-    $day_of_week = date('w',$date);
-    $day_of_year = date('z',$date);
-    $chore_days_of_year = $day_of_year - $week;
-
-    $assignments = Array();
-
-    $kids = Array( 'ryan','calvin','sophie','hannah' );
-    $chores = Array( 'Garbage','Toys','Laundry','Dishes' );
-    $sunday_chores = Array( 'Phone Call','Letter','Scriptures','Song' );
-
-    if($day_of_week == 0){ // Sunday
-        foreach($kids as $ki => $kid){
-            $assignments[$kid] = $sunday_chores[($ki + $week) % 4];
-        }
-    }else{
-        foreach($kids as $ki => $kid){
-            $assignments[$kid] = $chores[($ki + $chore_days_of_year) %4];
-        }
-    }
-
-    return $assignments;
-}
+require_once(__DIR__ . '/lib.inc');
 
 $user_sessions = getSessions();
 
@@ -102,6 +14,7 @@ $user_table_info = Array();
 $time_left = time_left();
 $todays_chore_status = todays_chore_status();
 $todays_assignments = getChores();
+$this_weeks_fhe = fheAssignments();
 
 foreach($usernames as $username){
 
@@ -135,6 +48,7 @@ foreach($usernames as $username){
         $user_table_info[$username]['face'] = "No picture found";
     }
 
+    // computer time left
     foreach($user_table_info as $username => $details){
         if(array_key_exists($username,$time_left)){
             $user_table_info[$username]['time_left'] = $time_left[$username]['minutes'];
@@ -143,6 +57,7 @@ foreach($usernames as $username){
         }
     }
 
+    // which chores are done / chore forms
     foreach($user_table_info as $username => $details){
         if(!isset($todays_chore_status[$username])){
             if(isset($detail['morning']) && $detail['morning']){
@@ -169,22 +84,31 @@ foreach($usernames as $username){
                 $user_table_info[$username]['extra'] = makeExtraChoreForm($username);
             }
         }else{
-            $user_table_info[$username]['morning'] = makeButtonForm($username,'morning',FALSE);
-            $user_table_info[$username]['night'] = makeButtonForm($username,'morning',FALSE);
+            $user_table_info[$username]['morning'] = makeButtonForm($username,'morning',$todays_chore_status[$username]['morning']);
+            $user_table_info[$username]['night'] = makeButtonForm($username,'night',$todays_chore_status[$username]['night']);
             $user_table_info[$username]['extra'] = makeExtraChoreForm($username);
         }
     }
 
+    // Todays chores
     if(isset($todays_assignments[$username])){
         $user_table_info[$username]['chore'] = $todays_assignments[$username];
     }else{
         $user_table_info[$username]['chore'] = '';
     }
+
+    // Lock button
+    $user_table_info[$username]['lock'] = "<button class='lockbutton'>Lock</button>";
+
+    // FHE Assignments
+    $user_table_info[$username]['fhe'] = $this_weeks_fhe[$username];
 }
 
 
 $keys = Array(
     'face' => '',
+    'lock'      => '',
+    'fhe' => 'FHE Assignment',
     'chore' => 'Todays Chore',
     'loggedin' => 'Logged In?',
     'active' => 'Active?',
@@ -194,9 +118,8 @@ $keys = Array(
     'night'   => 'Night Chores',
     'extra'   => 'Extra Chores',
 
-    'timetoday' => 'Time Used Today',
-    'lock'      => 'Lock Session',
-    'vnc'      => 'Start VNC Session',
+    // 'timetoday' => 'Time Used Today',
+    // 'vnc'      => 'Start VNC Session',
 );
 
 
@@ -214,7 +137,7 @@ $keys = Array(
 <?php
 
 foreach($keys as $key => $label){
-    print "<tr>";
+    print "<tr class='$key'>";
     print "<th>$label</th>";
     foreach($user_table_info as $username => $userinfo){
 
@@ -229,7 +152,7 @@ foreach($keys as $key => $label){
         }else{
             $printme = 'Coming Soon!';
         }
-        print "<td class='$class'>$printme</td>";
+        print "<td class='$class $username $key' data-username='$username'>$printme</td>";
     }
     print "</tr>";
 }
