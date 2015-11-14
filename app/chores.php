@@ -9,7 +9,7 @@ $extra_time = $_REQUEST['extra_time'];
 
 if($time == 'extra'){
     $results = add_extra_chore($username,$extra,$extra_time);
-} else if($time){
+} else if($time) {
     $results = toggle_chore($username,$time);
 }
 

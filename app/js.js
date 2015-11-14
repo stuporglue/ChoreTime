@@ -10,6 +10,16 @@ $(document).ready(function(){
             }
 
             $('.time_left.' + f.find('[name=username]').val()).html(success.timeleft);
+
+            if(success.spending !== undefined){
+                $('.spending.' + f.find('[name=username]').val()).html(success.spending);
+            }
+            if(success.allowance !== undefined){
+                $('.allowance.' + f.find('[name=username]').val()).html(success.allowance);
+            }
+            if(success.savings !== undefined){
+                $('.savings.' + f.find('[name=username]').val()).html(success.savings);
+            }
         },function(failure){
             console.log(failure);
         });
