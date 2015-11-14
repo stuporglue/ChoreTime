@@ -84,3 +84,14 @@ td.spending:before,td.tithing:before,td.savings:before {
 td.empty:before {
     content: '' !important;
 }
+
+td.moneyform,
+td.extra,
+td.morning,
+.index td.spending,
+.index td.time_left,
+.admin tr.loggedin td,
+.admin tr.loggedin th
+{
+    padding-top: 20px;
+}

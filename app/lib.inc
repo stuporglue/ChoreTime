@@ -72,11 +72,28 @@ function makeButtonForm($username,$time,$done){
 }
 
 function makeExtraChoreForm($username){
-    $html = "<form action='chores.hpp method='post'>";
+    $html = "<form action='chores.php method='post'>";
     $html .= "<input type='hidden' name='username' value='$username'/>";
     $html .= "<input type='hidden' name='time' value='extra'/>";
     $html .= "<input type='text' name='extra' value='' placeholder='What did they do'/><br>";
     $html .= "<input type='text' name='extra_time' value='' placeholder='minutes'/>";
+    $html .= "<input type='submit' value='Add'/>";
+    $html .= "</form>";
+    return $html;
+}
+
+function makeMoneyChangeForm($username){
+    $html = "<form action='chores.php method='post'>";
+    $html .= "<input type='hidden' name='username' value='$username'/>";
+    $html .= "<input type='hidden' name='money' value='extra'/>";
+    $html .= "<select name='account'>";
+        $html .= "<option value='all'>Adjust all 3</option>";
+        $html .= "<option value='spending'>Adjust Spending</option>";
+        $html .= "<option value='tithing'>Adjust Tithing</option>";
+        $html .= "<option value='savings'>Adjust Savings</option>";
+    $html .= "</select>";
+    $html .= "<input type='text' name='extra' value='' placeholder='What did they do?'/><br>";
+    $html .= "<input type='text' name='extra_money' value='' placeholder='Amount. No $ sign.'/>";
     $html .= "<input type='submit' value='Add'/>";
     $html .= "</form>";
     return $html;

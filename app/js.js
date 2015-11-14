@@ -9,13 +9,15 @@ $(document).ready(function(){
                 f.find('.done').addClass('notdone').removeClass('done');
             }
 
-            $('.time_left.' + f.find('[name=username]').val()).html(success.timeleft);
+            if(success.timeleft !== undefined){
+                $('.time_left.' + f.find('[name=username]').val()).html(success.timeleft);
+            }
 
             if(success.spending !== undefined){
                 $('.spending.' + f.find('[name=username]').val()).html(success.spending);
             }
-            if(success.allowance !== undefined){
-                $('.allowance.' + f.find('[name=username]').val()).html(success.allowance);
+            if(success.tithing !== undefined){
+                $('.tithing.' + f.find('[name=username]').val()).html(success.tithing);
             }
             if(success.savings !== undefined){
                 $('.savings.' + f.find('[name=username]').val()).html(success.savings);

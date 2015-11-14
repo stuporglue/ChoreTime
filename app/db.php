@@ -96,35 +96,9 @@ function toggle_chore($username,$time){
             die($mysqli->error);
         }
 
-
-        $q = "INSERT INTO ledger(username,date,amount,account,note) VALUES (?,CURDATE(),-0.05,'tithing','$time chores')";
-        $sql = $mysqli->prepare($q);
-        $sql->bind_param('s',$username);
-        if(!$sql->execute()){
-            print __FILE__ . ':' . __LINE__ . "    (" . time() . ")<br/>\n"; 
-            die($mysqli->error);
-        }
-
-        $q = "INSERT INTO ledger(username,date,amount,account,note) VALUES (?,CURDATE(),-0.25,'savings','$time chores')";
-        $sql = $mysqli->prepare($q);
-        $sql->bind_param('s',$username);
-        if(!$sql->execute()){
-            print __FILE__ . ':' . __LINE__ . "    (" . time() . ")<br/>\n"; 
-            die($mysqli->error);
-        }
-
-        $q = "INSERT INTO ledger(username,date,amount,account,note) VALUES (?,CURDATE(),-0.20,'spending','$time chores')";
-        $sql = $mysqli->prepare($q);
-        $sql->bind_param('s',$username);
-        if(!$sql->execute()){
-            print __FILE__ . ':' . __LINE__ . "    (" . time() . ")<br/>\n"; 
-            die($mysqli->error);
-        }
-
-
-
-
-
+        add_to_ledger($username,-0.05,'tithing',"$time chores");
+        add_to_ledger($username,-0.25,'savings',"$time chores");
+        add_to_ledger($username,-0.20,'spending',"$time chores");
 
         $done = FALSE;
     }else{
@@ -142,31 +116,9 @@ function toggle_chore($username,$time){
             die($mysqli->error);
         }
 
-        $q = "INSERT INTO ledger(username,date,amount,account,note) VALUES (?,CURDATE(),0.05,'tithing','$time chores')";
-        $sql = $mysqli->prepare($q);
-        $sql->bind_param('s',$username);
-        if(!$sql->execute()){
-            print __FILE__ . ':' . __LINE__ . "    (" . time() . ")<br/>\n"; 
-            die($mysqli->error);
-        }
-
-        $q = "INSERT INTO ledger(username,date,amount,account,note) VALUES (?,CURDATE(),0.25,'savings','$time chores')";
-        $sql = $mysqli->prepare($q);
-        $sql->bind_param('s',$username);
-        if(!$sql->execute()){
-            print __FILE__ . ':' . __LINE__ . "    (" . time() . ")<br/>\n"; 
-            die($mysqli->error);
-        }
-
-        $q = "INSERT INTO ledger(username,date,amount,account,note) VALUES (?,CURDATE(),0.20,'spending','$time chores')";
-        $sql = $mysqli->prepare($q);
-        $sql->bind_param('s',$username);
-        if(!$sql->execute()){
-            print __FILE__ . ':' . __LINE__ . "    (" . time() . ")<br/>\n"; 
-            die($mysqli->error);
-        }
-
-
+        add_to_ledger($username,0.05,'tithing',"$time chores");
+        add_to_ledger($username,0.25,'savings',"$time chores");
+        add_to_ledger($username,0.20,'spending',"$time chores");
 
         $done = TRUE;
     }
@@ -183,6 +135,18 @@ function toggle_chore($username,$time){
     $status = array_merge($status,$balance);
 
     return $status;
+}
+
+function add_to_ledger($username,$amount,$account,$note){
+    global $mysqli;
+
+    $q = "INSERT INTO ledger(username,date,amount,account,note) VALUES (?,CURDATE(),-0.20,'spending','$time chores')";
+    $sql = $mysqli->prepare($q);
+    $sql->bind_param('s',$username);
+    if(!$sql->execute()){
+        print __FILE__ . ':' . __LINE__ . "    (" . time() . ")<br/>\n"; 
+        die($mysqli->error);
+    }
 }
 
 function add_allowance($username,$amount){
@@ -260,4 +224,24 @@ function add_extra_chore($username,$chore,$time){
     $timeleft = add_time($username,$time);
 
     return Array('done' => TRUE,'timeleft' => $timeleft,'username' => $username);
+}
+
+function add_extra_money($username,$account,$amount,$description){
+
+    if(!in_array($account,Array('savings','tithing','spending','all'))){
+        die("Bad account in extra money");
+    }
+
+    if($account == 'all'){
+        add_to_ledger($username,$amount * 0.10,'tithing',$description);
+        add_to_ledger($username,$amount * 0.50,'savings',$description);
+        add_to_ledger($username,$amount * 0.40,'spending',$description);
+        add_allowance($username,$amount);
+    }else{
+        add_to_ledger($username,$amount,$account,$description);
+        add_money($username,$account,$amount);
+    }
+
+    $allowance = allowance($username);
+    return $allowance[$username];
 }

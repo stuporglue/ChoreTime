@@ -18,6 +18,7 @@ $keys = Array(
     'morning'   => 'Morning Chores',
     'night'   => 'Night Chores',
     'extra'   => 'Extra Chores',
+    'moneyform' => 'Adjust Money',
 
     // 'timetoday' => 'Time Used Today',
     // 'vnc'      => 'Start VNC Session',
