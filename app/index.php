@@ -17,5 +17,7 @@ $keys = Array(
     'savings' => 'Unbanked Savings',
 );
 
+$accounts_to_skip = Array('stuporglue','mamallama');
+
 $bodyclass = 'index';
 require_once('template.php');

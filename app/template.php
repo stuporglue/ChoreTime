@@ -9,10 +9,18 @@
 <table>
 <?php
 
+if(!isset($accounts_to_skip)){
+    $accounts_to_skip = Array();
+}
+
 foreach($keys as $key => $label){
     print "<tr class='$key'>";
     print "<th>$label</th>";
     foreach($user_table_info as $username => $userinfo){
+
+        if(in_array($username,$accounts_to_skip)){
+            continue;
+        }
 
         $class = ($userinfo['active'] ? 'active' : 'inactive');
         $class .= ' ' . ($userinfo['loggedin'] ? 'loggedin' : 'loggedout');
