@@ -95,6 +95,37 @@ function toggle_chore($username,$time){
             print __FILE__ . ':' . __LINE__ . "    (" . time() . ")<br/>\n"; 
             die($mysqli->error);
         }
+
+
+        $q = "INSERT INTO ledger(username,date,amount,account,note) VALUES (?,CURDATE(),-0.05,'tithing','$time chores')";
+        $sql = $mysqli->prepare($q);
+        $sql->bind_param('s',$username);
+        if(!$sql->execute()){
+            print __FILE__ . ':' . __LINE__ . "    (" . time() . ")<br/>\n"; 
+            die($mysqli->error);
+        }
+
+        $q = "INSERT INTO ledger(username,date,amount,account,note) VALUES (?,CURDATE(),-0.25,'savings','$time chores')";
+        $sql = $mysqli->prepare($q);
+        $sql->bind_param('s',$username);
+        if(!$sql->execute()){
+            print __FILE__ . ':' . __LINE__ . "    (" . time() . ")<br/>\n"; 
+            die($mysqli->error);
+        }
+
+        $q = "INSERT INTO ledger(username,date,amount,account,note) VALUES (?,CURDATE(),-0.20,'spending','$time chores')";
+        $sql = $mysqli->prepare($q);
+        $sql->bind_param('s',$username);
+        if(!$sql->execute()){
+            print __FILE__ . ':' . __LINE__ . "    (" . time() . ")<br/>\n"; 
+            die($mysqli->error);
+        }
+
+
+
+
+
+
         $done = FALSE;
     }else{
         $q = "INSERT INTO time_log (date,username,";
@@ -110,16 +141,89 @@ function toggle_chore($username,$time){
             print __FILE__ . ':' . __LINE__ . "    (" . time() . ")<br/>\n"; 
             die($mysqli->error);
         }
+
+        $q = "INSERT INTO ledger(username,date,amount,account,note) VALUES (?,CURDATE(),0.05,'tithing','$time chores')";
+        $sql = $mysqli->prepare($q);
+        $sql->bind_param('s',$username);
+        if(!$sql->execute()){
+            print __FILE__ . ':' . __LINE__ . "    (" . time() . ")<br/>\n"; 
+            die($mysqli->error);
+        }
+
+        $q = "INSERT INTO ledger(username,date,amount,account,note) VALUES (?,CURDATE(),0.25,'savings','$time chores')";
+        $sql = $mysqli->prepare($q);
+        $sql->bind_param('s',$username);
+        if(!$sql->execute()){
+            print __FILE__ . ':' . __LINE__ . "    (" . time() . ")<br/>\n"; 
+            die($mysqli->error);
+        }
+
+        $q = "INSERT INTO ledger(username,date,amount,account,note) VALUES (?,CURDATE(),0.20,'spending','$time chores')";
+        $sql = $mysqli->prepare($q);
+        $sql->bind_param('s',$username);
+        if(!$sql->execute()){
+            print __FILE__ . ':' . __LINE__ . "    (" . time() . ")<br/>\n"; 
+            die($mysqli->error);
+        }
+
+
+
         $done = TRUE;
     }
 
     if($done){
         $timeleft = add_time($username,5);
+        $balance = add_allowance($username,'0.50');
     }else{
         $timeleft = add_time($username,-5);
+        $balance = add_allowance($username,'-0.50');
     }
 
-    return Array('done' => $done,'timeleft' => $timeleft,'username' => $username);
+    $status = Array('done' => $done,'timeleft' => $timeleft,'username' => $username);
+    $status = array_merge($status,$balance);
+
+    return $status;
+}
+
+function add_allowance($username,$amount){
+        $tithing = add_money($username,'tithing',$amount * 0.10);
+        $savings = add_money($username,'savings',$amount * 0.50);
+        $spending = add_money($username,'spending',$amount * 0.40);
+        return Array('tithing' => $tithing,'savings' => $savings, 'spending' => $spending);
+}
+
+function add_money($username,$account,$value){
+    global $mysqli;
+
+    if(!in_array($account,Array('savings','tithing','spending'))){
+        print __FILE__ . ':' . __LINE__ . "    (" . time() . ")<br/>\n"; 
+        die("Bad account");
+    }
+
+    $sql = "UPDATE allowance SET $account=($account + ?) WHERE username=?";
+    $sql = $mysqli->prepare($sql);
+    try {
+        $sql->bind_param('ds',$value,$username);
+    } catch (Exception $e){
+        print_r($e);
+    }
+    if(!$sql->execute()){
+        print __FILE__ . ':' . __LINE__ . "    (" . time() . ")<br/>\n"; 
+        die($mysqli->error);
+    }
+
+    $sql = "SELECT $account FROM allowance WHERE username=?";
+    $sql = $mysqli->prepare($sql);
+    $sql->bind_param('s',$username);
+    if(!$sql->execute()){
+        print __FILE__ . ':' . __LINE__ . "    (" . time() . ")<br/>\n"; 
+        die($mysqli->error);
+    }
+
+    $sql->bind_result($result);
+    $sql->fetch();
+
+    return $result;
 }
 
 function add_time($username,$amount){
