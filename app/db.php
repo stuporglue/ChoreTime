@@ -25,6 +25,24 @@ function time_left($user = FALSE){
     return $ret;
 }
 
+function allowance($user = FALSE){
+    global $mysqli;
+
+    $sql = "SELECT * FROM allowance";
+    if($user){
+        $sql .= " where username='$user'";
+    }
+
+    $res = $mysqli->query($sql);
+    $ret = Array();
+
+    while($row = $res->fetch_assoc()){
+        $ret[$row['username']] = $row;
+    }
+
+    return $ret;
+}
+
 function todays_chore_status(){
     global $mysqli;
 

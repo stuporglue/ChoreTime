@@ -11,8 +11,12 @@ img.face {
     padding: 5px;
 }
 
-.inactive img {
+.admin .inactive img {
     opacity: 0.4;
+}
+
+.index .inactive img {
+    opacity: 0.6;
 }
 
 .loggedin img {
@@ -45,4 +49,38 @@ img.face {
 tr.lock {
     padding-bottom: 20px;
     height: 50px;
+}
+
+
+.dishes {
+    background: url('./img/dishes.png');
+}
+
+.garbage {
+    background: url('./img/garbage.png');
+}
+
+.laundry {
+    background: url('./img/laundry.png');
+}
+
+.toys {
+    background: url('./img/toys.png');
+}
+
+.chore {
+    width: 100px;
+    height: 100px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: middle middle;
+    color: rgba(0,0,0,0);
+}
+
+td.spending:before,td.tithing:before,td.savings:before {
+    content: '$';
+}
+
+td.empty:before {
+    content: '' !important;
 }
