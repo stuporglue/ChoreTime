@@ -33,4 +33,24 @@ $(document).ready(function(){
         var url = 'lock.php?user=' + username;
         $.get(url);
     });
+
+    if($('body.index')){
+        var now = new Date();
+        var start = new Date(now.getFullYear(),0,0);
+        var diff = now - start;
+        oneDay = 1000 * 60 * 60 * 24;
+        startDay = Math.floor(diff / oneDay);
+
+        setInterval(function(){
+            var now = new Date();
+            var start = new Date(now.getFullYear(),0,0);
+            var diff = now - start;
+            curDay = Math.floor(diff / oneDay);
+            
+            if(curDay != startDay){
+                document.location = document.location;
+            }
+
+        },1000*60*15); // Check if we need to refresh every 15 minutes
+    }
 });
