@@ -67,6 +67,8 @@ function todays_chore_status(){
 function toggle_chore($username,$time){
     global $mysqli;
 
+    $balance = Array();
+
     $q = "SELECT * FROM time_log WHERE username=? AND date=CURDATE()";
     if($time == 'morning'){
         $q .= " AND morning";
@@ -96,9 +98,11 @@ function toggle_chore($username,$time){
             die($mysqli->error);
         }
 
-        add_to_ledger($username,-0.05,'tithing',"$time chores");
-        add_to_ledger($username,-0.25,'savings',"$time chores");
-        add_to_ledger($username,-0.20,'spending',"$time chores");
+        if(date('w') !== '0'){
+            add_to_ledger($username,-0.05,'tithing',"$time chores");
+            add_to_ledger($username,-0.25,'savings',"$time chores");
+            add_to_ledger($username,-0.20,'spending',"$time chores");
+        }
 
         $done = FALSE;
     }else{
@@ -116,20 +120,31 @@ function toggle_chore($username,$time){
             die($mysqli->error);
         }
 
-        add_to_ledger($username,0.05,'tithing',"$time chores");
-        add_to_ledger($username,0.25,'savings',"$time chores");
-        add_to_ledger($username,0.20,'spending',"$time chores");
+        if(date('w') !== '0'){
+            add_to_ledger($username,0.05,'tithing',"$time chores");
+            add_to_ledger($username,0.25,'savings',"$time chores");
+            add_to_ledger($username,0.20,'spending',"$time chores");
+        }
 
         $done = TRUE;
     }
 
-    if($done){
-        $timeleft = add_time($username,5);
-        $balance = add_allowance($username,'0.50');
+    if(date('w') !== '0'){
+        if($done){
+            $timeleft = add_time($username,5);
+            if(date('w') !== '0'){
+                $balance = add_allowance($username,'0.50');
+            }
+        }else{
+            $timeleft = add_time($username,-5);
+            if(date('w') !== '0'){
+                $balance = add_allowance($username,'-0.50');
+            }
+        }
     }else{
-        $timeleft = add_time($username,-5);
-        $balance = add_allowance($username,'-0.50');
+        $timeleft = add_time($username,0);
     }
+
 
     $status = Array('done' => $done,'timeleft' => $timeleft,'username' => $username);
     $status = array_merge($status,$balance);
