@@ -53,28 +53,21 @@ tr.lock {
 }
 
 
-.dishes {
-    background: url('./img/dishes.png');
-}
-
-.garbage {
-    background: url('./img/garbage.png');
-}
-
-.laundry {
-    background: url('./img/laundry.png');
-}
-
-.toys {
-    background: url('./img/toys.png');
-}
+.dishes { background: url('./img/dishes.png'); }
+.garbage { background: url('./img/garbage.png'); }
+.laundry { background: url('./img/laundry.png'); }
+.toys { background: url('./img/toys.png'); }
+.letter { background: url('./img/letter.png'); }
+.phonecall { background: url('./img/phonecall.png'); }
+.scriptures { background: url('./img/scriptures.png'); }
+.song { background: url('./img/song.png'); }
 
 .chore {
     width: 100px;
     height: 100px;
     background-size: contain;
     background-repeat: no-repeat;
-    background-position: middle middle;
+    background-position: center center;
     color: rgba(0,0,0,0);
 }
 

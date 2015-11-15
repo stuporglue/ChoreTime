@@ -113,7 +113,7 @@ function getChores($date = FALSE){
 
     $kids = Array( 'ryan','calvin','sophie','hannah' );
     $chores = Array( 'Garbage','Toys','Laundry','Dishes' );
-    $sunday_chores = Array( 'Phone Call','Letter','Scriptures','Song' );
+    $sunday_chores = Array( 'PhoneCall','Letter','Scriptures','Song' );
 
     if($day_of_week == 0){ // Sunday
         foreach($kids as $ki => $kid){
