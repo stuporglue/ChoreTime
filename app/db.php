@@ -155,9 +155,9 @@ function toggle_chore($username,$time){
 function add_to_ledger($username,$amount,$account,$note){
     global $mysqli;
 
-    $q = "INSERT INTO ledger(username,date,amount,account,note) VALUES (?,CURDATE(),-0.20,'spending','$time chores')";
+    $q = "INSERT INTO ledger(username,date,amount,account,note) VALUES (?,CURDATE(),?,?,'$time chores')";
     $sql = $mysqli->prepare($q);
-    $sql->bind_param('s',$username);
+    $sql->bind_param('sds',$username,$amount,$account);
     if(!$sql->execute()){
         print __FILE__ . ':' . __LINE__ . "    (" . time() . ")<br/>\n"; 
         die($mysqli->error);
