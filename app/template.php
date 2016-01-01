@@ -37,7 +37,7 @@ foreach($keys as $key => $label){
             $printme = 'Coming Soon!';
             $class .= ' empty';
         }
-        if(preg_match('/^[A-Za-z0-9]*$/',$printme)){
+        if(preg_match('/^[A-Za-z0-9_]*$/',$printme)){
             $extra_class = strtolower($printme);
         }else{
             $extra_class = "";

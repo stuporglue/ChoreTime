@@ -61,6 +61,7 @@ tr.lock {
 .phonecall { background: url('./img/phonecall.png'); }
 .scriptures { background: url('./img/scriptures.png'); }
 .song { background: url('./img/song.png'); }
+.living_room {background: url('./img/living_room.png'); }
 
 .chore {
     width: 100px;
