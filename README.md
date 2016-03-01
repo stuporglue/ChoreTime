@@ -32,3 +32,13 @@ Edit app/lib.inc and change up the list of kids, chores, weekly chores and sunda
 
 Create a database with the structure in db.sql and add entries in scren_time and allowance for each user. 
 User names have to match the Linux user names. Probably change the default un/pw in app/db.php 
+
+
+Screenshots
+===========
+
+What the kids see: 
+![Kid view](_screenshots/choretime.png)
+
+Admin interface:
+![Admin Interface](_screenshots/admin_interface.png)
