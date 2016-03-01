@@ -101,6 +101,7 @@ foreach($usernames as $username){
             $user_table_info[$username]['moneyform'] = makeMoneyChangeForm($username);
         }else{
             $user_table_info[$username]['morning'] = makeButtonForm($username,'morning',$todays_chore_status[$username]['morning']);
+            $todays_chore_status[$username]['night']= (empty($todays_chore_status[$username]['night']) ? '' : $todays_chore_status[$username]['night']);
             $user_table_info[$username]['night'] = makeButtonForm($username,'night',$todays_chore_status[$username]['night']);
             $user_table_info[$username]['extra'] = makeExtraChoreForm($username);
             $user_table_info[$username]['moneyform'] = makeMoneyChangeForm($username);
