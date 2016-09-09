@@ -104,14 +104,13 @@ function getChores($date = FALSE){
         $date = time();
     }
 
-    $week = date('W',$date);
+    // For special Sunday handling
     $day_of_week = date('w',$date);
-    $day_of_year = date('z',$date);
-    if($week > 0 && $day_of_year > 7){
-        $chore_days_of_year = $day_of_year - $week;
-    }else{
-        $chore_days_of_year = $day_of_year;
-    }
+
+    // Random seed!
+    // day of year * year
+    $seed = date('z',$date) * date('Y',$date);
+    srand($seed);
 
     $assignments = Array();
 
@@ -120,13 +119,18 @@ function getChores($date = FALSE){
     $weekly_chores = Array('Living_Room');
     $sunday_chores = Array( 'PhoneCall','Letter','Scriptures','Song' );
 
+    shuffle($chores); 
+    shuffle($sunday_chores);
+    shuffle($weekly_chores);
+    
+
     if($day_of_week == 0){ // Sunday
         foreach($kids as $ki => $kid){
-            $assignments[$kid] = $sunday_chores[($ki + $week) % 4];
+            $assignments[$kid] = $sunday_chores[$ki];
         }
     }else{
         foreach($kids as $ki => $kid){
-            $assignments[$kid] = $chores[($ki + $chore_days_of_year) %4];
+            $assignments[$kid] = $chores[$ki];
         }
 
         if($day_of_week == 1){ // On monday the garbage is already taken out
