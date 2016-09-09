@@ -17,7 +17,7 @@ function getActive(){
 
 function getSessions(){
     $res = shell_exec('loginctl list-sessions');
-    $res = split("\n",$res);
+    $res = explode("\n",$res);
     $sessions = Array();
     foreach($res as $session){
         $session = preg_split("|\s+|",trim($session));
@@ -33,9 +33,9 @@ function getSessions(){
 
     foreach($sessions as $k => $session){
         $res = shell_exec("loginctl show-session -p Display -p Active  {$session['SESSION']}");
-        $res = split("\n",trim($res));
+        $res = explode("\n",trim($res));
         foreach($res as $line){
-            $vars = split("=",trim($line));
+            $vars = explode("=",trim($line));
             if(count($vars) == 2){
                 $sessions[$k][$vars[0]] = $vars[1];
             }

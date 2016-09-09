@@ -4,7 +4,7 @@ require_once(__DIR__ . '/lib.inc');
 $user_sessions = getSessions();
 
 $usernames = shell_exec('getent passwd | tr ":" " " | awk "\$3 >= $(grep UID_MIN /etc/login.defs | cut -d " " -f 2) { print \$1 }" | sort| uniq|sed -e \'s/nobody//g\' | sort -u');
-$usernames = split("\n",trim($usernames));
+$usernames = explode("\n",trim($usernames));
 $usernames = array_map('trim',$usernames);
 $usernames = array_filter($usernames);
 
