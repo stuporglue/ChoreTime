@@ -59,7 +59,10 @@ function getSessions(){
 }
 
 function makeButtonForm($username,$time,$done){
-    $html = "<form action='chores.php' method='post'>";
+    $html = '';
+    if ( !isset($_GET['date'])){
+        $html .= "<form action='chores.php' method='post'>";
+    }
     $html .= "<input type='hidden' name='username' value='$username'/>";
     $html .= "<input type='hidden' name='time' value='$time'/>";
     if($done){
@@ -67,11 +70,16 @@ function makeButtonForm($username,$time,$done){
     }else{
         $html .= "<input class='notdone doitnow' type='submit' value='Do It!'/>";
     }
-    $html .= "</form>";
+    if ( !isset($_GET['date'])){
+        $html .= "</form>";
+    }
     return $html;
 }
 
 function makeExtraChoreForm($username){
+
+    if ( isset($_GET['date'])){ return ''; }
+
     $html = "<form action='chores.php method='post'>";
     $html .= "<input type='hidden' name='username' value='$username'/>";
     $html .= "<input type='hidden' name='time' value='extra'/>";
@@ -83,6 +91,8 @@ function makeExtraChoreForm($username){
 }
 
 function makeMoneyChangeForm($username){
+    if ( isset($_GET['date'])){ return ''; }
+
     $html = "<form action='chores.php method='post'>";
     $html .= "<input type='hidden' name='username' value='$username'/>";
     $html .= "<input type='hidden' name='money' value='extra'/>";
@@ -100,6 +110,11 @@ function makeMoneyChangeForm($username){
 }
 
 function getChores($date = FALSE){
+
+    if ( $date === FALSE && isset( $_GET['date'] ) ) {
+        $date = strtotime( $_GET['date'] );
+    }
+
     if($date === FALSE){
         $date = time();
     }

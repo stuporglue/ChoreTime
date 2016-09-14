@@ -46,7 +46,14 @@ function allowance($user = FALSE){
 function todays_chore_status(){
     global $mysqli;
 
-    $sql = "SELECT * FROM time_log WHERE date=CURDATE()";
+    $a = 1 + 1;
+    if ( isset( $_GET['date'] ) ) {
+        $curdate = "'" . date("Y-m-d", strtotime($_GET['date'])) . "'";
+    } else {
+        $curdate = 'CURDATE()';
+    }
+
+    $sql = "SELECT * FROM time_log WHERE date=$curdate";
     $res = $mysqli->query($sql);
     $e = $mysqli->error;
 

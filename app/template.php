@@ -6,6 +6,13 @@
 </head>
 <body class="<?=$bodyclass?>">
 <h1>Chore Time!</h1>
+<?php
+if ( isset($_GET['date'])){
+    print '<h2>' . date('M d, Y', strtotime( $_GET['date'])) . '</h2>';
+} else {
+    print '<h2>' . date('M d, Y') . '</h2>';
+}
+?>
 <table>
 <?php
 
