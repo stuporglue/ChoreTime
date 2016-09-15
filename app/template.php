@@ -7,11 +7,21 @@
 <body class="<?=$bodyclass?>">
 <h1>Chore Time!</h1>
 <?php
-if ( isset($_GET['date'])){
-    print '<h2>' . date('M d, Y', strtotime( $_GET['date'])) . '</h2>';
+
+if ( isset( $_GET['date'] ) ) {
+    $thedate = strtotime( $_GET['date'] );
 } else {
-    print '<h2>' . date('M d, Y') . '</h2>';
+    $thedate = time();
 }
+
+$prev = '<a href="?date=' . date('m/d/Y', ($thedate - 3600 * 24)) . '">&lt;&lt;</a>';
+$next = '<a href="?date=' . date('m/d/Y', ($thedate + 3600 * 24)) . '">&gt;&gt;</a>';
+print '<h2>' . $prev . ' | ' . date('l, F d, Y', $thedate) . ' | ' . $next . '</h2>';
+
+if ( isset($_GET['date'])){
+    print '<h3><a href="?">Go to Today</a></h3>';
+}
+
 ?>
 <table>
 <?php
